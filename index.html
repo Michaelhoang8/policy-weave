@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Policy Weave</title>
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <aside>
+      <a class="brand" href="#">policy<br /><em>weave</em><span>▦</span></a>
+      <p class="aside-note">Small rules.<br />Visible consequences.</p>
+      <nav aria-label="Workbench sections">
+        <button class="nav active" data-tab="desk" aria-current="page">
+          01 <span>Decision desk</span></button
+        ><button class="nav" data-tab="studio">02 <span>Revision studio</span></button
+        ><button class="nav" data-tab="review">03 <span>Change review</span></button>
+      </nav>
+      <div class="aside-bottom">LOCAL POLICY LAB<br />DENY OVERRIDES</div>
+    </aside>
+    <div class="shell">
+      <header>
+        <span id="head-label">Connecting…</span><button id="refresh">Refresh head ↻</button>
+      </header>
+      <main>
+        <p id="status" role="status" aria-live="polite">Opening the policy ledger…</p>
+        <section id="desk" class="panel">
+          <div class="heading">
+            <p class="eyebrow">DECISION DESK</p>
+            <h1>Permission, explained.</h1>
+            <p>Try a request. See every rule that shaped the answer.</p>
+          </div>
+          <div class="desk-grid">
+            <div class="request">
+              <div class="row">
+                <label
+                  >Policy source<select
+                    id="decision-revision"
+                    aria-label="Policy source"
+                  ></select></label
+                ><label
+                  >Example request<select id="example">
+                    <option value="0">Public reader</option>
+                    <option value="1" selected>Qualified analyst</option>
+                    <option value="2">Insufficient clearance</option>
+                    <option value="3">Suspended analyst</option>
+                    <option value="4">Unsupported action</option>
+                  </select></label
+                >
+              </div>
+              <div class="row">
+                <label>Action<input id="action" maxlength="48" value="read" /></label
+                ><label
+                  >Roles, comma separated<input
+                    id="roles"
+                    value="analyst"
+                    placeholder="Leave empty for no roles"
+                /></label>
+              </div>
+              <label
+                >Subject attributes<textarea
+                  id="subject"
+                  spellcheck="false"
+                  rows="5"
+                ></textarea></label
+              ><label
+                >Resource attributes<textarea
+                  id="resource"
+                  spellcheck="false"
+                  rows="4"
+                ></textarea></label
+              ><button id="evaluate" class="primary">Evaluate request ↗</button>
+            </div>
+            <div id="decision-card" class="decision-card">
+              <p class="eyebrow">DECISION</p>
+              <div id="decision-word">—</div>
+              <p id="decision-reason">Evaluate a request to inspect its outcome.</p>
+              <p id="decision-origin" class="muted"></p>
+              <button id="decision-export" hidden>Export decision</button>
+              <div class="principles">
+                <p>Any matching deny wins.</p>
+                <p>An allow needs at least one matching allow rule.</p>
+                <p>No match means deny. Missing attributes fail conditions.</p>
+              </div>
+            </div>
+          </div>
+          <section id="explanation" hidden>
+            <h2>Rule by rule</h2>
+            <div id="rules"></div>
+          </section>
+        </section>
+        <section id="studio" class="panel" hidden>
+          <div class="heading">
+            <p class="eyebrow">REVISION STUDIO</p>
+            <h1>Changes leave a trail.</h1>
+            <p>Preview a draft, then create an immutable revision in your local ledger.</p>
+          </div>
+          <div class="studio-tools">
+            <label>Load revision<select id="load-revision"></select></label
+            ><button id="load">Load into draft</button
+            ><label class="file"
+              >Import policy<input
+                id="file"
+                type="file"
+                accept="application/json,.json"
+                aria-label="Import policy" /></label
+            ><button id="draft-export">Export draft</button>
+          </div>
+          <label
+            >Draft policy JSON<textarea id="draft" spellcheck="false" rows="22"></textarea>
+          </label>
+          <div class="publish">
+            <label
+              >Revision note<input
+                id="note"
+                maxlength="240"
+                placeholder="Explain the policy change" /></label
+            ><button id="preview-draft">Preview with current request</button
+            ><button id="publish" class="primary">Create revision</button>
+          </div>
+          <p id="expected" class="muted"></p>
+          <details>
+            <summary>Policy language</summary>
+            <p>
+              Each rule has an id, allow/deny effect, action names, role names, and conditions. *
+              matches any action or role. Roles use any-match; conditions use all-match. Paths
+              address flat subject or resource attributes. Operators: eq, neq, in, gte, lte. Numeric
+              comparisons reject booleans and strings; missing values never match, including neq.
+              Equality is type-sensitive, except equivalent integer/float numbers compare equal.
+            </p>
+            <p>
+              Up to 50 rules, eight conditions per rule, 20 actions/roles per rule, and 20
+              attributes per request section. Values are null, booleans, strings up to 120
+              characters, or finite numbers within ±1e9. The laboratory explains decisions; it is
+              not connected to an enforcement system.
+            </p>
+          </details>
+          <details>
+            <summary>Revision history <span id="history-count"></span></summary>
+            <p class="muted">
+              Newest 100 revisions. Loading history changes the draft only. Creating a revision from
+              an older policy restores its behavior without rewriting history.
+            </p>
+            <div class="scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Revision</th>
+                    <th>Note</th>
+                    <th>Created UTC</th>
+                    <th>Digest prefix</th>
+                  </tr>
+                </thead>
+                <tbody id="history"></tbody>
+              </table>
+            </div>
+          </details>
+        </section>
+        <section id="review" class="panel" hidden>
+          <div class="heading">
+            <p class="eyebrow">CHANGE REVIEW</p>
+            <h1>What would change?</h1>
+            <p>Run the same requests through two saved revisions.</p>
+          </div>
+          <div class="row compare-controls">
+            <label>Before<select id="before"></select></label><span>→</span
+            ><label>After<select id="after"></select></label
+            ><button id="compare" class="primary">Compare decisions</button>
+          </div>
+          <details>
+            <summary>Request suite / JSON</summary>
+            <label class="sr-only" for="suite">Request suite JSON</label
+            ><textarea id="suite" spellcheck="false" rows="17"></textarea>
+            <p class="muted">
+              1–100 requests. Changed counts compare allow/deny outcomes; reasons and matching rules
+              remain visible even when the outcome stays the same.
+            </p>
+          </details>
+          <div id="comparison" hidden>
+            <div class="section-head">
+              <h2 id="comparison-summary"></h2>
+              <button id="comparison-export">Export comparison</button>
+            </div>
+            <div class="scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Request</th>
+                    <th>Before</th>
+                    <th>After</th>
+                    <th>Outcome changed</th>
+                    <th>Inspect</th>
+                  </tr>
+                </thead>
+                <tbody id="comparison-rows"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <footer>SQLite revision ledger · Local request evaluation · No external enforcement</footer>
+      </main>
+    </div>
+  </body>
+</html>

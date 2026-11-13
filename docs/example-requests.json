@@ -1,0 +1,60 @@
+[
+  {
+    "action": "read",
+    "roles": [],
+    "subject": {},
+    "resource": {
+      "classification": "public"
+    }
+  },
+  {
+    "action": "read",
+    "roles": [
+      "analyst"
+    ],
+    "subject": {
+      "clearance": 2,
+      "suspended": false
+    },
+    "resource": {
+      "classification": "internal"
+    }
+  },
+  {
+    "action": "read",
+    "roles": [
+      "analyst"
+    ],
+    "subject": {
+      "clearance": 1
+    },
+    "resource": {
+      "classification": "internal"
+    }
+  },
+  {
+    "action": "read",
+    "roles": [
+      "analyst"
+    ],
+    "subject": {
+      "clearance": 3,
+      "suspended": true
+    },
+    "resource": {
+      "classification": "public"
+    }
+  },
+  {
+    "action": "write",
+    "roles": [
+      "analyst"
+    ],
+    "subject": {
+      "clearance": 3
+    },
+    "resource": {
+      "classification": "internal"
+    }
+  }
+]

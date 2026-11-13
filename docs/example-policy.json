@@ -1,0 +1,64 @@
+{
+  "name": "Research workspace",
+  "rules": [
+    {
+      "actions": [
+        "read"
+      ],
+      "conditions": [
+        {
+          "op": "eq",
+          "path": "resource.classification",
+          "value": "public"
+        }
+      ],
+      "effect": "allow",
+      "id": "read-public",
+      "roles": [
+        "*"
+      ]
+    },
+    {
+      "actions": [
+        "read"
+      ],
+      "conditions": [
+        {
+          "op": "in",
+          "path": "resource.classification",
+          "value": [
+            "public",
+            "internal"
+          ]
+        },
+        {
+          "op": "gte",
+          "path": "subject.clearance",
+          "value": 3
+        }
+      ],
+      "effect": "allow",
+      "id": "analyst-internal",
+      "roles": [
+        "analyst"
+      ]
+    },
+    {
+      "actions": [
+        "*"
+      ],
+      "conditions": [
+        {
+          "op": "eq",
+          "path": "subject.suspended",
+          "value": true
+        }
+      ],
+      "effect": "deny",
+      "id": "suspended-subject",
+      "roles": [
+        "*"
+      ]
+    }
+  ]
+}

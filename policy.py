@@ -35,7 +35,7 @@ def names(values, label, wildcard=False):
 
 def validate_policy(value):
     exact(value, ['name', 'rules'], 'Policy')
-    if not isinstance(value['name'], str) or not 1 <= len(value['name'].strip()) <= 80:
+    if not isinstance(value['name'], str) or not value['name'].strip() or not 1 <= len(value['name']) <= 80:
         raise ValueError('Policy name must contain 1–80 characters.')
     if not isinstance(value['rules'], list) or len(value['rules']) > 50:
         raise ValueError('A policy may contain at most 50 rules.')

@@ -56,6 +56,7 @@ class PolicyTests(unittest.TestCase):
         p=sample_policy();p['rules'].append(p['rules'][0])
         with self.assertRaises(ValueError):validate_policy(p)
         with self.assertRaises(ValueError):validate_policy({'name':'x','rules':sample_policy()['rules']*20})
+        with self.assertRaises(ValueError):validate_policy({'name':'x'+' '*80,'rules':[]})
 
     def test_inputs_are_not_mutated_and_numeric_membership_is_strict(self):
         p=sample_policy();r=sample_requests()[1];before=copy.deepcopy((p,r));evaluate(p,r)
