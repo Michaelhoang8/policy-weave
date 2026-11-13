@@ -14,13 +14,15 @@ python run.py --port 8000
 
 Open http://127.0.0.1:8000/. The ignored `data/policies.sqlite3` database persists revisions. Use `--db path/to/file.sqlite3` for a separate ledger. A fresh database starts with one fictional research policy; screenshots show additional revisions created during validation.
 
+The request and decision explanation share one view. Matching-rule checks expand beside the request, while policy editing and revision comparisons have separate navigation.
+
 ## Three workflows
 
-**Decision desk:** evaluate a request against a saved revision or the unsaved draft. Inspect every rule's action, role, and attribute checks, including missing values. Export the decision with its request, revision ID, and policy digest.
+**Evaluate:** evaluate a request against a saved revision or the unsaved draft. Inspect every rule's action, role, and attribute checks, including missing values. Export the decision with its request, revision ID, and policy digest.
 
-**Revision studio:** edit/import policy JSON, preview it with the current request, and create a revision with a note. Publication includes the expected head revision; stale writers receive a conflict. Load an older policy into the draft and publish it to restore behavior without changing history. Refreshing the head preserves the draft, while refreshing the browser discards unsaved edits.
+**Policy revisions:** edit/import policy JSON, preview it with the current request, and create a revision with a note. Publication includes the expected head revision; stale writers receive a conflict. Load an older policy into the draft and publish it to restore behavior without changing history. Refreshing the head preserves the draft, while refreshing the browser discards unsaved edits.
 
-**Change review:** compare 1–100 requests against two immutable revisions, inspect matching rules on both sides, and open any after-result in the decision desk. The changed count measures allow/deny outcome changes; matching-rule changes remain visible even when the decision is unchanged.
+**Compare:** compare 1–100 requests against two immutable revisions, inspect matching rules on both sides, and open any after-result in the decision desk. The changed count measures allow/deny outcome changes; matching-rule changes remain visible even when the decision is unchanged.
 
 ![Policy comparison](docs/comparison.png)
 
